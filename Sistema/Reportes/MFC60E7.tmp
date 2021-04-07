@@ -1,0 +1,203 @@
+<?php		
+	$Nivel="../../";	
+	include($Nivel."includes/funciones.php");
+	
+	$conector=Conectar();
+	
+	session_start();
+	
+	$ID_USUARIO=$_SESSION[$SiglasSistema.'ID_USUARIO'];
+	
+	set_time_limit(0);
+	
+	$IdVentana=$_GET['IdVentana'];
+	
+	$ID_LOCALIDAD=$_GET['puerto'];
+	
+	$vSQL="select * from tb_localidad WHERE id_localidad=$ID_LOCALIDAD";
+	$result=$conector->Ejecutar($vSQL);
+	
+	$NB_PUERTO=odbc_result($result,'nb_localidad'); 	
+	
+	if($ID_LOCALIDAD==7)
+	{
+		$DS_NB_PUERTO='DE TODOS LOS PUERTOS';
+	}
+	else
+	{
+		$DS_NB_PUERTO='DEL PUERTO DE '.$NB_PUERTO;
+	}
+	
+	$conector->Cerrar();
+?>
+<html>
+<head>
+	<?php echo includes($Nivel);?>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>CARNETS IMPRESOS</title>
+    
+	<style>
+        .Estilo1 {font-weight: bold; color:#000000 }
+		
+		.tabla
+		{
+			font-size:12px;
+			font-family:Arial, Helvetica, sans-serif;
+		}
+		
+		th
+		{
+			background-color:#999;
+		}
+		
+		.color
+		{
+			background-color:#E6E6E6;
+		}
+    </style>
+    <script>
+		function CarnetsImpresos()
+		{
+			f_desde="f_desde="+$('#f_desde').val();
+			f_hasta="&f_hasta="+$('#f_hasta').val();
+			ID_LOCALIDAD="&ID_LOCALIDAD=<?php echo $ID_LOCALIDAD?>";
+			
+			parametros=f_desde+f_hasta+ID_LOCALIDAD;
+			
+			//$('#Resultados').load("CONSULTA_CARNETS_IMPRESOS.php?"+parametros);
+			
+			$.ajax(
+			{
+				url: "CONSULTA_CARNETS_IMPRESOS.php",			
+				data: parametros,	
+				type: "GET",
+				beforeSend: function() 
+				{			
+					window.parent.$('#Loading').css('display','');
+				},			
+				success: function(result) 
+				{
+					window.parent.$('#Loading').css('display','none');
+					$('#Resultados').html(result)
+				}						
+			});
+		}
+		
+		$(document).ready(function(e) 
+		{		
+			$( "#f_desde" ).datepicker(
+			{
+				defaultDate: "+1w",
+				changeYear: true,
+				changeMonth: true,
+				yearRange: '2014:+1',
+				numberOfMonths: 1,
+				dateFormat: 'dd/mm/yy',
+				monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+				monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+				monthStatus: 'Ver otro mes', 
+				yearStatus: 'Ver otro año',
+				dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+				dayNamesShort: ['Dom','Lun','Mar','Mie','Jue','Vie','Sáb'],
+				dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+				onClose: function( selectedDate ) 
+				{
+					$( "#f_hasta" ).datepicker( "option", "minDate", selectedDate );
+				}
+			});
+			
+			$( "#f_hasta" ).datepicker(
+			{
+				defaultDate: "+1w",
+				changeYear: true,
+				changeMonth: true,
+				yearRange: '-100:+1',
+				numberOfMonths: 1,
+				dateFormat: 'dd/mm/yy',
+				monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+				monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+				monthStatus: 'Ver otro mes', 
+				yearStatus: 'Ver otro año',
+				dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+				dayNamesShort: ['Dom','Lun','Mar','Mie','Jue','Vie','Sáb'],
+				dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+				onClose: function( selectedDate ) 
+				{
+					$( "#f_desde" ).datepicker( "option", "maxDate", selectedDate );
+				}
+			});
+			
+			$('#f_desde').datepicker('setDate', 'today');
+			$('#f_hasta').datepicker('setDate', 'today');
+		});
+	</script>
+</head>
+<body onLoad='CarnetsImpresos();'>
+<script>
+    function ImpDiv(Id)
+    {
+        var div=document.getElementById(Id);
+        var VenImp=window.open(' ','popimpr');
+        VenImp.document.open();
+        //VenImp.document.write("holaaa");
+        VenImp.document.write(div.innerHTML);
+        VenImp.document.close();
+        VenImp.print();
+        VenImp.close();
+    }
+</script>
+<input type="button" id="Imprimir" value="Imprimir" onclick="ImpDiv('imprimir');" class="button small btnSistema"/>
+<div id="imprimir">
+<table width="1046" border="0" align="center" cellpadding="0" cellspacing="0" class="tabla" style="margin:auto;">
+  <tr>
+    <td colspan="4" align="center" scope="row"><p><img src="../../imagen/header.png" width="885" height="52" />
+	</p>
+      </br>
+      <h1>CONTROL ACCESO</h1>
+      <h1><?php echo $DS_NB_PUERTO;?></h1>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      </strong>
+      <table width="200" border="0" style="border-collapse: collapse; text-align: center;">
+      <tr>
+        <td>USUARIO:</td>
+        <td>
+          	<input type="text" id="USUARIO" name="USUARIO" readonly onChange="CarnetsImpresos()"/>
+          </td>
+           <td>PLACA:</td>
+        <td>
+          	<input type="text" id="PLACA" name="PLACA" readonly onChange="CarnetsImpresos()"/>
+          </td>
+           <td>CI EMPLEADO:</td>
+        <td>
+          	<input type="text" id="CI_EMPLE" name="CI_EMPLE" readonly onChange="CarnetsImpresos()"/>
+          </td>
+        </tr>
+      <tr>
+      <td colspan="5">FECHA</td>
+        <td >&nbsp;</td>
+      </tr>
+        <tr> 
+          <td>DESDE:</td>
+          <td>
+          	<input type="text" id="f_desde" name="f_desde" readonly onChange="CarnetsImpresos()"/>
+          </td>
+          <td >&nbsp;</td>
+          <td>HASTA:</td>
+          <td>
+          	<input type="text" id="f_hasta" name="f_hasta" readonly onChange="CarnetsImpresos()"/>
+          </td>
+           <td >&nbsp;</td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<div id="Resultados">
+</div>
+</div>
+</div>  
+</body>
+</html>

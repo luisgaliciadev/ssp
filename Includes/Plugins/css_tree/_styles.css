@@ -1,0 +1,83 @@
+/* CSS Tree menu styles */
+.Arbol ol.tree
+{
+	padding: 0 0 0 30px;
+	width: 300px;
+}
+
+.Arbol li 
+{ 
+	position: relative; 
+	margin-left: -15px;
+	list-style: none;
+}
+
+.Arbol li.file
+{
+	margin-left: -1px !important;
+}
+
+.Arbol li.file a
+{
+	background: url(document.png) 0 0 no-repeat;
+	color: #000000;
+	padding-left: 21px;
+	text-decoration: none;
+	display: block;
+}
+
+.Arbol li.file a[href *= '.pdf']	{ background: url(document.png) 0 0 no-repeat; }
+
+.Arbol li.file a[href *= '.html']	{ background: url(document.png) 0 0 no-repeat; }
+
+.Arbol li.file a[href $= '.css']	{ background: url(document.png) 0 0 no-repeat; }
+
+.Arbol li.file a[href $= '.js']		{ background: url(document.png) 0 0 no-repeat; }
+
+.Arbol li input
+{
+	position: absolute;
+	left: 0;
+	margin-left: -10px;
+	margin-top: 2px;
+	opacity: 0;
+	z-index: 2;
+	cursor: pointer;
+	height: 22px;
+	width: 22px;
+	top: 0;
+	border:#000000 1px solid;
+}
+
+.Arbol li input + ol > li 
+{ 
+	display: none; margin-left: -14px !important; padding-left: 1px; 
+}
+
+.Arbol li label
+{
+	/*background: url(folder-horizontal.png) 15px 1px no-repeat;*/
+	cursor: pointer;
+	display: block;
+	padding-left: 15px;
+}
+
+.Arbol li input + ol
+{
+	background: url(toggle-small-expand.png) 40px 0 no-repeat;
+	margin: -22px 0 0 -50px; /* 15px */
+	height: 20px;
+	border:#000000 0px solid;
+}
+
+.Arbol li input:checked + ol
+{
+	background: url(toggle-small.png) 40px 0px no-repeat;
+	margin: -22px 0 0 -50px; /* 20px */
+	padding: 15px 0 0 80px;
+	height: auto;
+}
+
+.Arbol li input:checked + ol > li { display: block; margin: 0 0 0.125em;  /* 2px */}
+
+.Arbol li input:checked + ol > li:last-child { margin: 0 0 0.063em; /* 1px */ }
