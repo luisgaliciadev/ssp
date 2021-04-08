@@ -25,10 +25,10 @@
 			$CI_USUARIO=$_SESSION[$_SESSION['SiglasSistema'].'LOGIN'];
 		}
 		
-		$Host		= "190.9.130.54, 2433";
-		$BaseDatos	= "SASPWEB";
-		$Usuario	= "saspweb";
-		$Clave		= "s4spw3808_";
+		$Host		= "";
+		$BaseDatos	= "";
+		$Usuario	= "";
+		$Clave		= "";
 		
 		$_SESSION['BaseDatos']=$BaseDatos;
 		
